@@ -1,5 +1,7 @@
+layout (location = 0) out vec4 fragColor;
 uniform float time;
 uniform vec3 iResolution;
+uniform vec4 iMouse;
 const int NUM_STEPS = 8;
 const float PI	 	= 3.1415;
 const float EPSILON	= 1e-3;
@@ -154,17 +156,15 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
 }
 
 // main
-
-out vec4 fragColor;
-in vec2 fragCoord;
 void main() {
-		vec2 uv = iResolution.xy;
+		vec2 uv = gl_FragCoord.xy / iResolution.xy;
     uv = uv * 2.0 - 1.0;
     uv.x *= iResolution.x / iResolution.y;
+		float timeDriver = time * 0.3 + iMouse.x*0.01;
 
     // ray
-    vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
-    vec3 ori = vec3(0.0,3.5,time*5.0);
+    vec3 ang = vec3(sin(timeDriver*3.0)*0.1,sin(timeDriver)*0.2+0.3,timeDriver);
+    vec3 ori = vec3(0.0,3.5,timeDriver*5.0);
     vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.15;
     dir = normalize(dir) * fromEuler(ang);
 
